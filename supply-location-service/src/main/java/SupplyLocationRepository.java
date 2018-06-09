@@ -6,7 +6,9 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 /**
  * Created by xihuan on 18-6-6.
  */
-@RepositoryRestResource(path = "supply")
+@RepositoryRestResource(path = "supplyLocations")
 public class SupplyLocationRepository extends PagingAndSortingRepository<SupplyLocation, String> {
     SupplyLocation findFirstByLocationNear(@Param("location") Point location);
 }
+
+
