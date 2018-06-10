@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import org.hibernate.annotations.Table;
 
 import javax.persistence.*;
 
@@ -17,10 +16,11 @@ import javax.persistence.*;
 // Object Model 1 field - 1 column
 // One to many, many to one, one to one
 // Map to the table LOCATIONS,
+// Table is optional as JPA can infer it from the class name
 @JsonInclude(JsonInclude.Include.NON_NULL) // empty field will not map to our object
 @Entity
 @Data
-@javax.persistence.Table(name = "LOCATIONS")
+@Table(name = "LOCATIONS")
 public class Location {
     public enum GpsStatus{
         EXCELLENT, OK, UNRELIABLE, BAD, NOFIX, UNKNOWN;
@@ -29,15 +29,22 @@ public class Location {
         STOPPED, IN_MOTION;
     }
 
+    // Id here is mandantory
+    // generatedValue can do auto generate id for you
     @Id
     @GeneratedValue
     private long id;
 
+    // Embedded makes it get the entire object instance
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "fmi", column = @Column(name = "medical_fmi")),
+            @AttributeOverride(name = "bfr", column = @Column(name = "medical_bfr"))
+    })
     private MedicalInfo medicalInfo;
 
     @Embedded
-    @AttributeOverride(name = "bandmake", column = @Column(name = "unit_band_name"))
+    @AttributeOverride(name = "bandMake", column = @Column(name = "unit_band_name"))
     private UnitInfo unitinfo;
 
     private double latitude;
@@ -55,7 +62,11 @@ public class Location {
     private RunnerMovementType runnerMovementType;
     private String serviceType;
 
+    public Location(){
+        this.unitinfo = null;
+    }
     // when json passed into service, we need a constructor class to init the object
+    // we only take the runningId from the Json get passed
     @JsonCreator
     public Location(@JsonProperty("runningId") String runningId) {
         this.unitinfo = new UnitInfo((runningId));
@@ -63,6 +74,7 @@ public class Location {
 
     public Location(UnitInfo unitinfo) {this.unitinfo = unitinfo;}
 
+    // this is not a getter, hence not covered by lombok
     public String getRunningId() {return this.unitinfo == null? null: this.unitinfo.getRunningId();}
 
 

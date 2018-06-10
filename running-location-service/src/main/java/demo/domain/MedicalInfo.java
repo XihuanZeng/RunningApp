@@ -8,6 +8,8 @@ import javax.persistence.Embeddable;
 /**
  * Created by xihuan on 18-6-2.
  */
+
+// To make this class that can be embedded in the Location, we need to add Embeddable annoation to this class
 @JsonInclude(JsonInclude.Include.NON_NULL) // empty field will not map to our object
 @Data
 @Embeddable

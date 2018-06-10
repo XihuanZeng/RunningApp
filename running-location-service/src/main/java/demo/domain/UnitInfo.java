@@ -13,7 +13,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class UnitInfo {
     private final String runningId;
-    private String bandmake;
+    private String bandMake;
     private String customerName;
     private String unitNumber;
 
@@ -21,9 +21,9 @@ public class UnitInfo {
 
     public UnitInfo(String runningId) {this.runningId = runningId;}
 
-    public UnitInfo(String runningId, String bandmake, String customerName, String unitNumber){
+    public UnitInfo(String runningId, String bandMake, String customerName, String unitNumber){
         this.runningId = runningId;
-        this.bandmake = bandmake;
+        this.bandMake = bandMake;
         this.customerName = customerName;
         this.unitNumber = unitNumber;
     }

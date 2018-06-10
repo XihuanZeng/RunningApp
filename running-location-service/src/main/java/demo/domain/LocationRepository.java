@@ -14,7 +14,7 @@ import org.springframework.data.rest.core.annotation.RestResource;
 // <Object type, Id type>
 // Location is the class name that you add @Entity on
 // can look into the interface JpaRepository that has findAll, save, delete
-// the ultra parent class is CrudRepository, but extend that class you will not have paginzation
+// the ultra parent class is CrudRepository, but extend that class you will not have pagination
 @RepositoryRestResource(path = "locations")
 public interface LocationRepository extends JpaRepository<Location, Long> {
     // translate to SQLQuery, it is "select * from Locations where RunnerMovementType = movementType"
