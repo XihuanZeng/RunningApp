@@ -43,9 +43,10 @@ public class Location {
     })
     private MedicalInfo medicalInfo;
 
+    // unit band name will be unitInfo
     @Embedded
     @AttributeOverride(name = "bandMake", column = @Column(name = "unit_band_name"))
-    private UnitInfo unitinfo;
+    private UnitInfo unitInfo;
 
     private double latitude;
     private double longitude;
@@ -63,19 +64,19 @@ public class Location {
     private String serviceType;
 
     public Location(){
-        this.unitinfo = null;
+        this.unitInfo = null;
     }
     // when json passed into service, we need a constructor class to init the object
     // we only take the runningId from the Json get passed
     @JsonCreator
     public Location(@JsonProperty("runningId") String runningId) {
-        this.unitinfo = new UnitInfo((runningId));
+        this.unitInfo = new UnitInfo((runningId));
     }
 
-    public Location(UnitInfo unitinfo) {this.unitinfo = unitinfo;}
+    public Location(UnitInfo unitinfo) {this.unitInfo = unitinfo;}
 
     // this is not a getter, hence not covered by lombok
-    public String getRunningId() {return this.unitinfo == null? null: this.unitinfo.getRunningId();}
+    public String getRunningId() {return this.unitInfo == null? null: this.unitInfo.getRunningId();}
 
 
 }

@@ -35,7 +35,8 @@ public class RunningUpdateRestController {
         this.locationService.deleteAll();
     }
 
-    //add PathVariable because it is given by frontend
+    // add PathVariable because it is given by frontend
+    // localhost:9000/running/STOPPED?page=1&size=10
     @RequestMapping(value = "/running/{movementType}", method = RequestMethod.GET)
     public Page<Location> findByMovementType(@PathVariable String movementType, @RequestParam(name = "page") int page,
                                              @RequestParam(name = "size") int size){
