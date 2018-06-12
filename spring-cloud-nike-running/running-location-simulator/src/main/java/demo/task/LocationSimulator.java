@@ -1,6 +1,9 @@
 package demo.task;
 
 import demo.model.*;
+import demo.support.NavUtils;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 import java.util.List;
@@ -22,12 +25,16 @@ public class LocationSimulator implements Runnable {
     private boolean exportPositionsToMessaging = true;
     private Integer reportInterval = 500;
 
+    @Getter
+    @Setter
     private PositionInfo currentPosition = null;
 
+    @Setter
     private List<Leg> legs;
     private RunnerStatus runnerStatus = RunnerStatus.NONE;
     private String runningId;
 
+    @Setter
     private Point startPoint;
     private Date executionStartTime;
 
@@ -89,16 +96,18 @@ public class LocationSimulator implements Runnable {
                             new Point(this.currentPosition.getPosition().getLatitude(), this.currentPosition.getPosition().getLongitude()),
                             this.currentPosition.getRunnerStatus(),
                             this.currentPosition.getSpeed(),
-                            this.currentPosition.getLeg().getHeading(), medicalInfoToUse);
+                            this.currentPosition.getLeg().getHeading(),
+                            medicalInfoToUse
+                    );
 
                     // send the current position to distribution service RestApi
                     // TODO implement positionInfoService
-                }
-            }
 
-            // wait a while for the new request to come
-            // this sleep not the thread sleep
-            sleep(startPoint);
+                }
+                // wait a while for the new request to come
+                // this sleep not the thread sleep
+                sleep(startTime);
+            }
         }
         catch (InterruptedException ie){
             destroy();
@@ -135,7 +144,7 @@ public class LocationSimulator implements Runnable {
                 currentPosition.setLeg(currentLeg);
                 // algorithm: calculcate next position with running direction and current position
                 // TODO: Implement the new position calculation method in NavUtils
-                Point newPosition = null;
+                Point newPosition = NavUtils.getPosition(currentLeg.getStartPosition(),);
                 currentPosition.setLeg(newPosition);
                 return;
             }
@@ -153,4 +162,10 @@ public class LocationSimulator implements Runnable {
         currentPosition.setPosition(leg.getStartPosition());
         currentPosition.setDistanceFromStart(0.0);
     }
+
+    public void getSpeed() { return this.speedInMps;}
+
+    // synchronized means this thread when we cancel it, other request cannot do anything on it
+    public synchronized void cancel() {this.cancel.set(true);}
+
 }

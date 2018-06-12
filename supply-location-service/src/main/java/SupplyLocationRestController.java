@@ -11,9 +11,9 @@ import java.util.List;
 @RestController
 public class SupplyLocationRestController {
 
-    // dependency injection
     private SupplyLocationRepository repository;
 
+    // dependency injection
     @Autowired
     public SupplyLocationRestController(SupplyLocationRepository repository){
         this.repository = repository;
@@ -25,7 +25,7 @@ public class SupplyLocationRestController {
         this.repository.save(locations);
     }
 
-    @RequestMapping()
+    @RequestMapping(value = "/purge", method = RequestMethod.DELETE)
     public void delete() {
         this.repository.deleteAll();
     }
