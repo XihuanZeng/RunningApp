@@ -15,4 +15,8 @@ public class PositionInfo {
 
     private double distanceFromStart;
     private double speed;
+
+    public PositionInfo() {
+
+    }
 }

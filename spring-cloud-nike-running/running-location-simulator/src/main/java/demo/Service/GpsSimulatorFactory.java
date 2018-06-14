@@ -10,7 +10,7 @@ import java.util.List;
  * Created by xihuan on 18-6-11.
  */
 
-// this is how we receive
+// this is how the simulator, when receiving request, how to deal with that
 
 
 public interface GpsSimulatorFactory {

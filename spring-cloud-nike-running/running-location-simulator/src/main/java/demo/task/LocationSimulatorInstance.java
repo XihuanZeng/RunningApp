@@ -9,7 +9,7 @@ import java.util.concurrent.Future;
  * Created by xihuan on 18-6-11.
  */
 
-// In this class we do async
+// this is a model class for
 
 // AllArgsConstructor
 @Data

@@ -1,9 +1,11 @@
 package demo.task;
 
+import demo.Service.PositionService;
 import demo.model.*;
 import demo.support.NavUtils;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.List;
@@ -13,18 +15,33 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by xihuan on 18-6-8.
  */
 
+
+// This class is to create a thread class that implements Runnable interface to do multithreading
 // one request one thread
+/** the steps are
+     1. init start time of the executor
+     2. if the thread is canceled by client(via request), reset the currentPosition to null
+     3. if arrived at destination, set speed to 0, otherwise will continue to move(based on speed and direction we
+        predict next position.
+     4. determine medical info based on runner status
+     5. prepare current position info(based on speed and direction we predict next position.)
+     6. send current position to distribution service
+ */
 public class LocationSimulator implements Runnable {
     private long id;
 
+    // for canceling the simulation thread, this variable is kept atomic as no other thread can access it while one thread
+    // is updating this
     private AtomicBoolean cancel = new AtomicBoolean();
 
     private double speedInMps;
 
+    // this determines whether the runner should move or not
     private boolean shouldmove;
     private boolean exportPositionsToMessaging = true;
     private Integer reportInterval = 500;
 
+    // we did not use lombok Data since we only want several of our fields to be visible to public
     @Getter
     @Setter
     private PositionInfo currentPosition = null;
@@ -40,6 +57,9 @@ public class LocationSimulator implements Runnable {
 
     private MedicalInfo medicalInfo;
 
+    private PositionService positionService;
+
+    // this thread class is being created by a request class
     public LocationSimulator(GpsSimulatorRequest gpsSimulatorRequest) {
         this.shouldmove = gpsSimulatorRequest.isMove();
         this.exportPositionsToMessaging = gpsSimulatorRequest.isExportPositionToMessaging();
@@ -51,25 +71,29 @@ public class LocationSimulator implements Runnable {
         this.medicalInfo = gpsSimulatorRequest.getMedicalInfo();
     }
 
-    public void setSpeed(double speed) {
-        this.speedInMps = speed;
-    }
+
 
     @Override
     public void run() {
-        // we need a way to handle if the thread is being interupted
+        // we need a way to handle if the thread is being interrupted
+        // if it is being interrupted, then we need to destroy it
         try {
             executionStartTime = new Date();
+            // cancel is AtomicBoolean, need to use get to get the value
             if (cancel.get()){
                 destroy();
                 return;
             }
+            // ways to break this loop
+            // 1. we reach destination, which will set currentPosition to null
+            // 2. runnerStatus is set to STOP_NOW, this will break
             while (currentPosition != null) {
                 long startTime = new Date().getTime();
 
                 // calculate the next position
                 if(currentPosition != null){
                     if (shouldmove){
+                        // this function update currentPosition
                         moveRunningLocation();
                         currentPosition.setSpeed(speedInMps);
                     } else {
@@ -102,6 +126,7 @@ public class LocationSimulator implements Runnable {
 
                     // send the current position to distribution service RestApi
                     // TODO implement positionInfoService
+                    positionService.processPositionInfo(id, currentPosition, this.exportPositionsToMessaging);
 
                 }
                 // wait a while for the new request to come
@@ -143,9 +168,9 @@ public class LocationSimulator implements Runnable {
                 currentPosition.setDistanceFromStart(distanceFromStart);
                 currentPosition.setLeg(currentLeg);
                 // algorithm: calculcate next position with running direction and current position
-                // TODO: Implement the new position calculation method in NavUtils
-                Point newPosition = NavUtils.getPosition(currentLeg.getStartPosition(),);
-                currentPosition.setLeg(newPosition);
+                // the new position calculation method in NavUtils
+                Point newPosition = NavUtils.getPosition(currentLeg.getStartPosition(), distanceFromStart, currentLeg.getHeading());
+                currentPosition.setPosition(newPosition);
                 return;
             }
             distanceFromStart = excess;
@@ -163,7 +188,9 @@ public class LocationSimulator implements Runnable {
         currentPosition.setDistanceFromStart(0.0);
     }
 
-    public void getSpeed() { return this.speedInMps;}
+    public double getSpeed() {return this.speedInMps;}
+
+    public void setSpeed(double speed) {this.speedInMps = speed;}
 
     // synchronized means this thread when we cancel it, other request cannot do anything on it
     public synchronized void cancel() {this.cancel.set(true);}

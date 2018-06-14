@@ -13,7 +13,7 @@ public class GpsSimulatorRequest {
     private boolean move = true;
     private boolean exportPositionToMessaging = true;
     private Integer reportInterval = 500;
-    private RunnerStatus runnerStatus = RunnerStatus.None;
+    private RunnerStatus runnerStatus = RunnerStatus.NONE;
     private String polyline;
     private MedicalInfo medicalInfo;
 
