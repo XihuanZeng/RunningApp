@@ -12,6 +12,9 @@
         <module>running-location-simulator</module>
         <module>running-location-distribution</module>
         <module>running-location-updater</module>
+        <module>platform</module>
+        <module>platform/eureka</module>
+        <module>platform/hystrix</module>
     </modules>
 
     <parent>

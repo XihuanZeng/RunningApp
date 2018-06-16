@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/platform/eureka/platform/eureka.iml" filepath="$PROJECT_DIR$/platform/eureka/platform/eureka.iml" />
+      <module fileurl="file://$PROJECT_DIR$/platform/hystrix/platform/hystrix.iml" filepath="$PROJECT_DIR$/platform/hystrix/platform/hystrix.iml" />
+      <module fileurl="file://$PROJECT_DIR$/platform/platform.iml" filepath="$PROJECT_DIR$/platform/platform.iml" />
       <module fileurl="file://$PROJECT_DIR$/running-location-distribution/running-location-distribution.iml" filepath="$PROJECT_DIR$/running-location-distribution/running-location-distribution.iml" />
       <module fileurl="file://$PROJECT_DIR$/running-location-simulator/running-location-simulator.iml" filepath="$PROJECT_DIR$/running-location-simulator/running-location-simulator.iml" />
       <module fileurl="file://$PROJECT_DIR$/running-location-updater/running-location-updater.iml" filepath="$PROJECT_DIR$/running-location-updater/running-location-updater.iml" />
